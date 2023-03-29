@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const Thing = require('./models/Thing')
 
 
 mongoose.connect('mongodb+srv://benjaminmbureau:Dovakhin23@cluster0.c0qkszr.mongodb.net/?retryWrites=true&w=majority',
@@ -12,8 +13,6 @@ mongoose.connect('mongodb+srv://benjaminmbureau:Dovakhin23@cluster0.c0qkszr.mong
 
 app.use(express.json());
 
-
-
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -22,10 +21,14 @@ app.use((req, res, next) => {
   });
 
 app.post('/api/books', (res, req, next)=>{
-    console.log(req.body);
-    res.status(201).json({message:'livre créé'})
-    next();
-})
+    delete req.body._id
+   const thing = new Thing ({
+    ...req.body
+   });
+thing.save()
+.then(()=> res.status(201).json({message: 'Livre enregistré'}))
+.catch(error => res.status(400).json({error}));
+});
 
 app.get('/api/books', (req, res, next) => {
     const books = [
@@ -47,7 +50,7 @@ app.get('/api/books', (req, res, next) => {
         userId: 'qsomihvqios',
       },
       {
-        id: '3',
+        _id: '3',
         title: 'Les misérables',
         author: 'Victor Hugo',
         imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
