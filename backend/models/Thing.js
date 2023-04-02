@@ -7,7 +7,7 @@ const thingSchema = mongoose.Schema({
     imageUrl: {type: String, required: true},
     year: {type: Number, required: true},
     genre: {type: String, required: true},
-    averageRating: {type: Number, required: true}
+    averageRating: {type: Number, }
 
 });
 
