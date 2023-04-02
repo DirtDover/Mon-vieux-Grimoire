@@ -20,6 +20,13 @@ app.use((req, res, next) => {
     next();
   });
 
+app.put('/api/books/:id', (req, res, next) =>{
+  Thing.updateOne({_id : req.params.id}, {...req.body, _id: req.params.id})
+  .then(()=> res.status(200).json({message: 'Livre modifié'}))
+  .catch(error => res.status(400).json({error}))
+});
+
+
 app.post('/api/books', (res, req, next)=>{
     delete req.body._id
    const thing = new Thing ({
@@ -30,36 +37,23 @@ thing.save()
 .catch(error => res.status(400).json({error}));
 });
 
+app.delete('/api/books/:id', (req, res, next) => {
+  Thing.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Livre supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+app.get('/api/books/:id', (req, res, next) =>{
+  Thing.findOne({_id: req.params.id})
+  .then(thing => res.status(200).json(thing))
+  .catch(error => res.status(404).json({error}))
+});
+
+
 app.get('/api/books', (req, res, next) => {
-    const books = [
-      {
-        _id: '1',
-        title: 'Les misérables',
-        author: 'Victor Hugo',
-        imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-        year: 1862,
-        genre: 'roman',
-        userId: 'qsomihvqios',
-      },
-      {
-        _id: '2',
-        title: 'Mon deuxième objet',
-        description: 'Les infos de mon deuxième objet',
-        imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-        price: 2900,
-        userId: 'qsomihvqios',
-      },
-      {
-        _id: '3',
-        title: 'Les misérables',
-        author: 'Victor Hugo',
-        imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',
-        year: 1862,
-        genre: 'roman',
-        userId: 'qsomihvqios',
-      },
-    ];
-    res.status(200).json(books);
+    Thing.find()
+    .then(things=> res.status(2000).json(things))
+    .catch(error => res.status(400).json({error}));
   });
 
   
