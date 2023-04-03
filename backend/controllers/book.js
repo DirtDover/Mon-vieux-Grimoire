@@ -4,6 +4,7 @@ exports.createThing = (res, req, next)=>{
     delete req.body._id
    const thing = new Thing ({
     ...req.body
+    
    });
 thing.save()
 .then(()=> res.status(201).json({message: 'Livre enregistré'}))
