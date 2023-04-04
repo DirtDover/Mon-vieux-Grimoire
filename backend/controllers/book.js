@@ -1,41 +1,115 @@
-const Thing = require ('../models/Thing');
+const Book = require ('../models/Books');
+const Router = require('express')
 
 
 
-exports.createThing = (req, res, next) => {
-  const thingObject = JSON.parse(req.body.thing);
-  
-  const thing = new Thing({
-      ...thingObject,
-      userId: req.auth.userId,
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-  });
+exports.addNewBook = (req, res, next) => {
+	const bookObject = JSON.parse(req.body.book);
 
-  thing.save()
-  .then(() => { res.status(201).json({message: 'Livre enregistré !'})})
-  .catch(error => { res.status(400).json( { error })})
+	const book = new Book({
+		...bookObject,
+
+		imageUrl: `${req.protocol}://${req.get('host')}/files/${
+			req.file.filename
+		}`,
+	});
+
+	book.save()
+		.then(() => res.status(201).json({ message: 'Objet enregistré' }))
+		.catch((error) => res.status(400).json({ error }));
 };
 
-exports.modifyThing = (req, res, next) =>{
-    Thing.updateOne({_id : req.params.id}, {...req.body, _id: req.params.id})
-    .then(()=> res.status(200).json({message: 'Livre modifié'}))
-    .catch(error => res.status(400).json({error}))
-  };
+exports.findBooks = (req, res, next) => {
+	Book.find()
+		.then((books) => res.status(200).json(books))
+		.catch((error) => res.status(400).json({ error }));
+};
+exports.findBook = (req, res, next) => {
+	const url = req.url;
 
-exports.deleteThing = (req, res, next) => {
-    Thing.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Livre supprimé !'}))
-      .catch(error => res.status(400).json({ error }));
-  }  
+	const urlId = url.split('/')[1];
 
-exports.getOneThing = (req, res, next) =>{
-    Thing.findOne({_id: req.params.id})
-    .then(thing => res.status(200).json(thing))
-    .catch(error => res.status(404).json({error}))
-  }  
+	Book.findOne({ _id: urlId })
+		.then((books) => res.status(200).json(books))
+		.catch((error) => res.status(400).json({ error }));
+};
 
-exports.getAllThings = (req, res, next) => {
-    Thing.find()
-    .then(things=> res.status(200).json(things))
-    .catch(error => res.status(400).json({error}));
-  }  
+exports.updateBook = (req, res, next) => {
+	const url = req.url;
+	const urlId = url.split('/')[1];
+	const bookFilter = { _id: urlId };
+	let updatedData;
+	const checkData = () => {
+		if (typeof req.body.book !== 'string') {
+			console.log(typeof req.body.book);
+			updatedData = req.body;
+			return updatedData;
+		} else {
+			console.log(typeof req.body.book);
+			updatedData = JSON.parse(req.body.book);
+			updatedData.imageUrl = `${req.protocol}://${req.get(
+				'host'
+			)}/files/${req.file.filename}`;
+			return updatedData;
+		}
+	};
+
+	checkData();
+
+	const updatedBook = Book.findOneAndUpdate(bookFilter, updatedData, {
+		new: true,
+	})
+		.then((books) => res.status(201).json(books))
+		.catch((error) => res.status(400).json({ error }));
+};
+
+exports.deleteBook = (req, res, next) => {
+	const url = req.url;
+	const urlId = url.split('/')[1];
+	const bookFilter = { _id: urlId };
+	const deletedBook = Book.findOneAndDelete(bookFilter, {
+		new: true,
+	})
+		.then((books) => res.status(201).json(books))
+		.catch((error) => res.status(400).json({ error }));
+};
+
+exports.bookBestRating = (req, res, next) => {
+	Book.find()
+		.sort({ averageRating: 'desc' })
+		.then((books) => res.status(200).json(books.splice(0, 3)))
+		.catch((error) => res.status(400).json({ error }));
+};
+
+exports.rateBook = (req, res, next) => {
+	const url = req.url;
+	const urlId = url.split('/')[1];
+	const bookFilter = { _id: urlId };
+	const updatedUserId = req.body.userId;
+	const updatedGrade = req.body.rating;
+
+	const updatedData = {
+		userId: updatedUserId,
+		grade: updatedGrade,
+	};
+
+	Book.findOneAndUpdate(
+		bookFilter,
+		{ $push: { ratings: updatedData } },
+		{ new: true }
+	)
+		.then((updatedBook) => {
+			const totalRatings = updatedBook.ratings.length;
+			const ratingsSum = updatedBook.ratings.reduce(
+				(acc, rating) => acc + rating.grade,
+				0
+			);
+			updatedBook.averageRating = ratingsSum / totalRatings;
+
+			return updatedBook.save();
+		})
+		.then((book) => {
+			res.status(200).json(book);
+		})
+		.catch((error) => res.status(400).json({ error }));
+};
