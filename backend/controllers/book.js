@@ -10,7 +10,7 @@ exports.addNewBook = (req, res, next) => {
 		...bookObject,
 
 		imageUrl: `${req.protocol}://${req.get('host')}/files/${
-			req.file.filename
+			req.file.filename.trim()
 		}`,
 	});
 
