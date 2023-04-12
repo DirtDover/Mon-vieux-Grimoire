@@ -6,6 +6,7 @@ const userRoutes = require('./routes/user');
 const path = require('path');
 
 
+
 mongoose.connect('mongodb+srv://benjaminmbureau:Dovakhin23@cluster0.c0qkszr.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
 
   app.use('/api/books',bookRoutes);
   app.use('/api/auth', userRoutes);
-  app.use('/images', express.static(path.join(__dirname, 'files')));
+  app.use('/files', express.static(path.join(__dirname, 'files')));
 
 
 
