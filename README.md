@@ -1,11 +1,18 @@
-# Mon vieux Grimoire
+# Mon Vieux Grimoire
 
-## Comment lancer le projet ?
+---
 
-### Avec npm
+Sixième projet de ma formation de Développeur Web, projet introductif au Backend.  
+Apprentissage du language NodeJS, d'Express et de MongoDB.  
+Le Front-End nous était fourni.  
+Nous devions dévelopez la partie Backend de l'application web.
 
-Faites la commande `npm install` pour installer les dépendances puis `npm start` pour lancer le projet.
+J'ai appri grâce à ce projet à :
 
-Le projet a été testé sur node 19.
+- Créer un serveur web simple avec Express.
+- Créer une API REST avec Node, Express et MongoDB.
+- Mettre en place un système d'authentification sur une application Express.
+- Gérer des fichiers utilisateur sur une application Express.
+- Mettre en œuvre des opérations CRUD de manière sécurisée.
 
-Test
+**Lien du site** : [Mon vieux Grimoire](https://dirtdover.github.io/Mon-vieux-Grimoire/)
