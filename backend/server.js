@@ -1,6 +1,9 @@
+// fichier de mise en pace du server Nods.js
+
 const http = require('http');
 const app = require('./app');
 
+//Fonction qui gère sur quel port est ouvert le serv
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
@@ -15,6 +18,8 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
+
+// gestion amélioré des erreurs
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
     throw error;
@@ -35,6 +40,7 @@ const errorHandler = error => {
   }
 };
 
+// Le serveur renvoit l'app.js
 const server = http.createServer(app);
 
 server.on('error', errorHandler);
