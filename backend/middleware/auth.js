@@ -1,4 +1,5 @@
-// Middelware qui gère l'authentification du user. Quand on a besoin d'être log pour une route, le middelware vérifie que le user est bien log
+// Middelware qui gère l'authentification du user. Quand on a besoin d'être log pour une route, 
+// le middelware vérifie que le user est bien log en vérifiant quil existe un token
 
 const jwt = require('jsonwebtoken');
 
