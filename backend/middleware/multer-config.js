@@ -1,3 +1,5 @@
+//Permet la configuration du stockage des images
+
 const multer = require('multer');
 
 const MIME_TYPES = {

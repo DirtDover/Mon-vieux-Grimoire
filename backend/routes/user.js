@@ -1,3 +1,5 @@
+// Gestion de la logique de routing de l'authentification de l'app
+
 const express = require('express');
 const router = express.Router();
 const userCtrl = require('../controllers/user');

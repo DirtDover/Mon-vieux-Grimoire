@@ -1,3 +1,5 @@
+// Utilisation des Schema de mongoose. Permet d'avoir un modèle des books qu'on veut récupérer ou créer.
+
 const mongoose = require("mongoose");
 
 const bookSchema = mongoose.Schema(
